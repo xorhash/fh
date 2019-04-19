@@ -1,0 +1,56 @@
+.Dd April 19, 2019
+.Dt FR 1
+.Os
+.Sh NAME
+.Nm fr
+.Nd retrieve old version of file from history
+.Sh SYNOPSIS
+.Nm
+.Op Fl o Ar filename
+.Op Fl r Ar revision
+.Ar file
+.Sh DESCRIPTION
+The
+.Nm
+utility fetches the most recent version of the given
+.Ar file
+from the file history.
+If
+.Ar file
+already exists,
+a warning is printed.
+.Pp
+The following options are available:
+.Bl -tag -width Ds
+.It Fl o Ar filename
+Write to the given
+.Ar filename
+instead of
+.Ar file .
+This can be used to compare changes between two revisions.
+.It Fl r Ar revision
+Fetch the given
+.Ar revision
+instead of the most recent one.
+If this exceeds the most recent revision,
+the most recent revision is fetched anyway.
+Do not prefix
+.Ar revision
+with
+.Dq r .
+.El
+.Pp
+For the format of the file history,
+see
+.Xr fh 5 .
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa H/H. Ns Ar file
+the path to the file history
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh SEE ALSO
+.Xr fl 1 ,
+.Xr fu 1 ,
+.Xr fh 5

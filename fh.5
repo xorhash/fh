@@ -1,0 +1,69 @@
+.Dd April 19, 2019
+.Dt FH 5
+.Os
+.Sh NAME
+.Nm fh
+.Nd format of file histories
+.Sh DESCRIPTION
+A file history file is a plaintext file.
+It consists of two parts:
+a sequence of
+.Xr ed 1
+scripts and
+a sequence of commit descriptions.
+.Pp
+The
+.Xr ed 1
+scripts are generated using
+.Cm diff -e .
+.Pp
+The commit descriptions consist of at least three lines:
+a heading, the date and the commit message.
+The heading consists of an ASCII SOH (start of heading;
+\\001) followed by
+.Sq C ,
+a space,
+the line number where the respective
+.Xr ed 1
+script starts,
+a comma and
+the line number where the respective
+.Xr ed 1
+script ends.
+The date consists of the output of
+.Xr date 1 .
+The commit message is a free-form text that continues on until
+the next heading;
+it may consist of multiple lines and it may just consist of
+a single empty line.
+A commit may look something like this:
+.Bd -literal -offset indent
+^AC 31,33
+Fri Apr 19 18:36:47 CEST 2019
+lowercase 'w'
+
+Grammatically, "world" in "Hello, world!" should be lowercase.
+.Ed
+.Pp
+The first
+.Xr ed 1
+script describes how to reconstruct the first file checked in with
+.Xr fu 1 .
+Every subsequent script records the changes to the original.
+.Pp
+History files are stored in a path named as follows:
+.Pa H/H. Ns Ar file .
+The
+.Pa H
+directory is always relative to the current directory.
+.Sh SEE ALSO
+.Xr fl 1 ,
+.Xr fr 1 ,
+.Xr fu 1
+.Sh BUGS
+Because the
+.Dq base
+revision is the oldest one,
+.Sy the more history is recorded, the slower retrieval becomes .
+It may be worthwhile to archive or delete history files that go back
+more than a few dozen of changes.

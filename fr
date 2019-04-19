@@ -1,0 +1,72 @@
+#!/bin/sh
+set -e
+
+if test $# -lt 1; then
+	echo "usage: $0 [-o filename] [-r rev] file" 1>&2
+	exit 1
+fi
+
+if test $# -gt 1; then
+	while test $# -gt 1; do
+		case "$1" in
+		-r)
+			REV="$2"
+			shift
+			shift
+			;;
+		-o)
+			OUT="$2"
+			shift
+			shift
+			;;
+		*)
+			echo "$0: unknown option $1" 1>&2
+		esac
+	done
+fi
+if test -z "$REV"; then
+	REV=-1
+fi
+if test -z "$OUT"; then
+	OUT="$1"
+fi
+if test "$REV" -ne -1; then
+	if test "$REV" -lt 1; then
+		echo "$0: invalid revision $REV" 1>&2
+		exit 1
+	fi
+fi
+
+if test -d "$1"; then
+	echo "$0: $1 is a directory" 1>&2
+	exit 1
+fi
+
+WARN=""
+if test -f "$OUT"; then
+	WARN="$0: warning: $OUT already exists"
+fi
+
+HF="H/H.$1"
+
+if test ! -r "$HF"; then
+	echo "$0: cannot open history $HF" 1>&2
+	exit 1
+fi
+
+rm -f "$OUT"
+i=1
+grep '^C ' "$HF" | while read _ range; do
+	sed -n "${range}p;\$a w\\nq" "$HF" | ed - "$OUT"
+	i=`expr $i + 1`
+	if test "$REV" -ne -1 -a $i -gt "$REV"; then
+		break
+	fi
+done
+
+if test -n "$WARN"; then
+	echo "$WARN" 1>&2
+fi
+
+exit 0
+

@@ -1,0 +1,76 @@
+#!/bin/sh
+set -e
+
+if test $# -lt 1; then
+	echo "usage: $0 file" 1>&2
+	exit 1
+fi
+
+if test \( ! -r "$1" \) -o \( ! -f "$1" \); then
+	echo "$0: $1 not a readable file" 1>&2
+	exit 1
+fi
+if test ! -s "$1"; then
+	echo "$0: $1 empty" 1>&2
+	exit 1
+fi
+
+if test ! -d H; then
+	mkdir H || (echo "$0: cannot mkdir H" 1>&2; exit 1)
+fi
+
+HF="H/H.$1"
+
+if test ! -s "$HF"; then
+	echo "a" >>"$HF"
+	cat "$1" >>"$HF"
+	cat >>"$HF" <<EOF
+.
+C 1,{{END}}
+`date`
+init
+EOF
+	: + 2 because of the 'a' and '.' commands
+	LEN=`wc -l "$1" | awk '{print $1 + 2}'`
+	ed - "$HF" <<EOF
+/^1,{{END}}$/s/{{END}}/$LEN/
+w
+q
+EOF
+else
+	OLDLEN=`sed '/^C /q' "$HF"|wc -l|awk '{print $1}'`
+	./fr -o tmpold "$1"
+	STATUS=0
+	{ diff -e tmpold "$1" > tmpnew; STATUS=$?; } || :
+	if test $STATUS -eq 0; then
+		echo "$0: no differences" 1>&2
+		rm -f tmpold tmpnew
+		exit 1
+	elif test $STATUS -eq 2; then
+		rm -f tmpold tmpnew
+		exit 1
+	fi
+	if sed -n '1p' tmpnew|grep '^Binary'; then
+		echo "$0: $1 is a binary file" 1>&2
+		rm -f tmpold tmpnew
+		exit 1
+	fi
+	rm tmpold
+	NEWLEN=`wc -l tmpnew|awk "{print \\$1 + $OLDLEN - 1}"`
+	echo "comments? (EOF to end) "
+	COMMENTS=`cat`
+	ed - "$HF" <<EOF
+${OLDLEN}-1r tmpnew
+\$a
+C $OLDLEN,$NEWLEN
+`date`
+$COMMENTS
+.
+w
+q
+EOF
+	rm tmpnew
+fi
+
+exit 0
+

@@ -1,0 +1,55 @@
+.Dd April 19, 2019
+.Dt FU 1
+.Os
+.Sh NAME
+.Nm fu
+.Nd update file history
+.Sh SYNOPSIS
+.Nm
+.Ar file
+.Sh DESCRIPTION
+The
+.Nm
+utility updates the file history.
+The given
+.Ar file
+must be a non-empty file, not a directory or device.
+It may not contain the sequence
+.Dq ^AC
+at the beginning of any line;
+on some platforms,
+lines must not consist of a lone dot (.), either.
+The given
+.Ar file
+must also not be a binary file.
+The defintion of what constitutes a binary file depends on
+.Xr diff 1 .
+.Pp
+A prompt
+.Dq comments? (EOF to end)
+is shown on update.
+This can be used to indicate information about what changes were
+made and why.
+No such prompt is shown for the initial revision.
+Do not enter a line that that starts with the sequence
+.Dq ^AC .
+Doing so will break the history file.
+.Pp
+The file history will not be updated if the given
+.Ar file
+is equal to the most recent entry in the file history.
+.Pp
+For the format of the file history,
+see
+.Xr fh 5 .
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa H/H. Ns Ar file
+the path to the file history
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh SEE ALSO
+.Xr fl 1 ,
+.Xr fr 1 ,
+.Xr fh 5

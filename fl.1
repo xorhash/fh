@@ -1,0 +1,33 @@
+.Dd April 19, 2019
+.Dt FL 1
+.Os
+.Sh NAME
+.Nm fl
+.Nd show of file history
+.Sh SYNOPSIS
+.Nm
+.Ar file
+.Sh DESCRIPTION
+The
+.Nm
+utility shows the file history for
+.Ar file .
+.Pp
+The history contains the revision number,
+the date when the revision was checked in and
+the revision comment.
+.Pp
+For the format of the file history,
+see
+.Xr fh 5 .
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa H/H. Ns Ar file
+the path to the file history
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh SEE ALSO
+.Xr fr 1 ,
+.Xr fu 1 ,
+.Xr fh 5

@@ -1,0 +1,42 @@
+#!/bin/sh
+set -e
+
+if test $# -lt 1; then
+	echo "usage: $0 file" 1>&2
+	exit 1
+fi
+
+HF="H/H.$1"
+
+if test ! -s "$HF"; then
+	echo "$0: no history in $HF" 1>&2
+	exit 1
+fi
+
+REV=1
+FIRST=1
+DATE=0
+sed -n '/^C /,$p' "$HF" | while read x; do
+	case "$x" in
+	C*)
+		if test $FIRST -ne 1; then
+			echo
+			FIRST=0
+		fi
+		echo -n "r$REV	"
+		REV=`expr $REV + 1`
+		DATE=1
+		;;
+	*)
+		if test $DATE -eq 1; then
+			echo $x
+			DATE=0
+		else
+			echo "	$x"
+		fi
+		;;
+	esac
+done
+
+exit 0
+
