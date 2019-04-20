@@ -42,4 +42,11 @@ Copy the man pages `fl.1`, `fr.1`, `fu.1` and `fh.5` to a directory in `$MANPATH
 
 For usage, see the supplied man pages.
 [man.md](man.md) is available on the web.
+For 7th Edition UNIX, the man pages written in mdoc macrosneed to be converted to old man macros first:
+
+    mkdir man
+    mandoc -Tman fl.1 > man/fl.1
+    mandoc -Tman fr.1 > man/fr.1
+    mandoc -Tman fu.1 > man/fu.1
+    mandoc -Tman fh.5 > man/fh.5
 
