@@ -21,6 +21,7 @@ if test $# -gt 1; then
 			;;
 		*)
 			echo "$0: unknown option $1" 1>&2
+			exit 1
 		esac
 	done
 fi
