@@ -33,7 +33,7 @@ EOF
 	: + 2 because of the 'a' and '.' commands
 	LEN=`wc -l "$1" | awk '{print $1 + 2}'`
 	ed - "$HF" <<EOF
-/^1,{{END}}$/s/{{END}}/$LEN/
+/^C 1,{{END}}$/s/{{END}}/$LEN/
 w
 q
 EOF
