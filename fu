@@ -39,7 +39,7 @@ q
 EOF
 else
 	OLDLEN=`sed '/^C /q' "$HF"|wc -l|awk '{print $1}'`
-	./fr -o tmpold "$1"
+	fr -o tmpold "$1"
 	STATUS=0
 	{ diff -e tmpold "$1" > tmpnew; STATUS=$?; } || :
 	if test $STATUS -eq 0; then
