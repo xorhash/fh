@@ -2,10 +2,25 @@
 set -e
 
 if test $# -lt 1; then
-	echo "usage: $0 file" 1>&2
+	echo "usage: $0 [-c comment] file" 1>&2
 	exit 1
 fi
 
+COMMENTS=""
+if test $# -gt 1; then
+	while test $# -gt 1; do
+		case "$1" in
+		-c)
+			COMMENTS="$2"
+			shift
+			shift
+			;;
+		*)
+			echo "$0: unknown option $1" 1>&2
+			exit 1
+		esac
+	done
+fi
 if test \( ! -r "$1" \) -o \( ! -f "$1" \); then
 	echo "$0: $1 not a readable file" 1>&2
 	exit 1
@@ -57,8 +72,10 @@ else
 	fi
 	rm tmpold
 	NEWLEN=`wc -l tmpnew|awk "{print \\$1 + $OLDLEN - 1}"`
-	echo "comments? (EOF to end) "
-	COMMENTS=`cat`
+	if test -z "$COMMENTS"; then
+		echo "comments? (EOF to end) "
+		COMMENTS=`cat`
+	fi
 	ed - "$HF" <<EOF
 ${OLDLEN}-1r tmpnew
 \$a

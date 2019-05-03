@@ -6,6 +6,7 @@
 .Nd update file history
 .Sh SYNOPSIS
 .Nm
+.Op Fl c Ar comment
 .Ar file
 .Sh DESCRIPTION
 The
@@ -30,7 +31,9 @@ A prompt
 is shown on update.
 This can be used to indicate information about what changes were
 made and why.
-No such prompt is shown for the initial revision.
+No such prompt is shown for the initial revision or if
+.Fl c
+with a message is given.
 Do not enter a line that that starts with the sequence
 .Dq ^AC .
 Doing so will break the history file.
